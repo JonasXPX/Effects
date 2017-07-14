@@ -1,0 +1,5 @@
+name: BauDeEfeitos
+main: me.jonasxpx.baudeefeitos.Teste
+version: 1.0
+commands:
+    efeito:
