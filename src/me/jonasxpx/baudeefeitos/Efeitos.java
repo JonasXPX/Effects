@@ -1,23 +1,30 @@
 package me.jonasxpx.baudeefeitos;
 
 import java.util.HashMap;
+import java.util.Random;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Effect;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import com.darkblade12.particleeffect.ParticleEffect;
+import com.darkblade12.particleeffect.ParticleEffect.ParticleData;
 
 public class Efeitos {
 
 	private static HashMap<Player, BukkitTask> ativos = new HashMap<Player, BukkitTask>();
 	
 	private static final long TIME = 5;
-	static Teste pl;
-	public Efeitos(Teste pl){
-		this.pl = pl;
+	private static Teste pl;
+	private static int raio = 0;
+	private static Random random = new Random();
+	public Efeitos(Teste plugin){
+		pl = plugin;
 	}
+	
 	public static void barrier(final Player p){
 		cancelar(p);
 		BukkitTask task = null;
@@ -29,45 +36,10 @@ public class Efeitos {
 		}.runTaskTimer(pl, 0, 1);
 		ativos.put(p, task);
 	}
-	private static double distanceSquared(Vector from, Vector to)
-    {
-        double dx = to.getBlockX() - from.getBlockX();
-        double dz = to.getBlockZ() - from.getBlockZ();
-        return dx * dx + dz * dz;
-    }
-	public static Vector calculateVelocity(Vector from, Vector to, int heightGain)
-    {
-        // Gravity of a potion
-        double gravity = 0.115;
-        // Block locations
-        int endGain = to.getBlockY() - from.getBlockY();
-        double horizDist = Math.sqrt(distanceSquared(from, to));
-        // Height gain
-        int gain = heightGain;
-        double maxGain = gain > (endGain + gain) ? gain : (endGain + gain);
-        // Solve quadratic equation for velocity
-        double a = -horizDist * horizDist / (4 * maxGain);
-        double b = horizDist;
-        double c = -endGain;
-        double slope = -b / (2 * a) - Math.sqrt(b * b - 4 * a * c) / (2 * a);
-        // Vertical velocity
-        double vy = Math.sqrt(maxGain * gravity);
-        // Horizontal velocity
-        double vh = vy / slope;
-        // Calculate horizontal direction
-        int dx = to.getBlockX() - from.getBlockX();
-        int dz = to.getBlockZ() - from.getBlockZ();
-        double mag = Math.sqrt(dx * dx + dz * dz);
-        double dirx = dx / mag;
-        double dirz = dz / mag;
-        // Horizontal velocity components
-        double vx = vh * dirx;
-        double vz = vh * dirz;
-        return new Vector(vx, vy, vz);
-    }
-	static double x = 0.0;
+	
+	private static double x = 0.0;
+	
 	public static void teste(final Player p){
-		
 		cancelar(p);
 		BukkitTask task = null;
 		task = new BukkitRunnable() {
@@ -278,9 +250,17 @@ public class Efeitos {
 		task = new BukkitRunnable() {
 			@Override
 			public void run() {
-				ParticleEffect.LAVA.display(0.5F, 0.5F, 0.5F, 2F, 20, p.getLocation(), 20D);
+				raio += random.nextInt(20);
+				if(raio >= 360) raio = 0;
+				double radian = Math.toRadians(raio);
+				double cos = Math.cos(radian);
+				double sin = Math.sin(radian);
+				
+				ParticleEffect.DRIP_LAVA.display(0,0,0, 0.4F, 20, p.getLocation().add((float)cos, (float)cos + 1, (float)sin), 25);
+
+				ParticleEffect.DRIP_LAVA.display(0,0,0, 0.4F, 20, p.getLocation().add((float)cos * -1, (float)cos + 1, (float)sin * -1), 25);
 			}
-		}.runTaskTimer(pl, 0, TIME);
+		}.runTaskTimer(pl, 0, 0L);
 		ativos.put(p, task);
 	}
 	public static void mob_appearance(final Player p){

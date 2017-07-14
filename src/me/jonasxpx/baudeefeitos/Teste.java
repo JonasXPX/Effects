@@ -35,8 +35,6 @@ public class Teste extends JavaPlugin implements Listener{
 	
    }
    
-   private Inventory a = null;
-   
    @Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String label, String[] args) {
@@ -114,11 +112,11 @@ public class Teste extends JavaPlugin implements Listener{
    }
    
    
-   String[] s = {"§2Este plugin ainda esta sendo escrito", "§2Qualquer bug deve ser reportado para JonasXPX"};
+   String[] s = {"§2Este plugin ainda está sendo escrito", "§2Qualquer bug deve ser reportado para JonasXPX"};
    public Inventory criaoBau(Player player){
 	   ItemStack vidro = criarItem(Material.THIN_GLASS, "§7Efeito para adicionar", "JonasXPX");
 	   ItemStack cancelar = new ItemStack(Material.STICK); ItemMeta mt = cancelar.getItemMeta(); mt.setDisplayName("§cDesligar Efeito"); cancelar.setItemMeta(mt);
-	   ItemStack lava = criarItem(Material.LAVA, "§cLava", "§2Lava borbulhando");
+	   ItemStack lava = criarItem(Material.LAVA, "§cLava", "§2Gotas de lava");
 	   ItemStack explosao = criarItem(Material.LAVA_BUCKET, "§2Gotas de lava", "§cEfeito da lava atravesando o bloco");
 	   ItemStack note = criarItem(Material.NOTE_BLOCK, "§2Notas musicais", "§cCria varias notas musicas");
 	   ItemStack mobspawner = criarItem(Material.ENCHANTMENT_TABLE, "§2Letras da Matrix", "§cParticulas soltada pela mesa de encantamento");
@@ -135,14 +133,15 @@ public class Teste extends JavaPlugin implements Listener{
 	   a.setItem(3, mobspawner);
 	   a.setItem(5, s);
 	   a.setItem(6, fire);
-	   for(int x = 7; x <= 17; x++){
-		   a.setItem(x, vidro);
+	   for(int x = 7; x < a.getSize(); x++){
+		   if(a.getItem(x)==null)a.setItem(x, vidro);
 	   }
 	   a.setItem(22, livro);
 	   return a;
    }
-   	ItemStack item = null;
-	ItemMeta mt = null;
+   
+   ItemStack item = null;
+   ItemMeta mt = null;
    public void disco(final Inventory inv, final String nome, final String ... descriçao){
 	   task = new BukkitRunnable() {
 		@Override
