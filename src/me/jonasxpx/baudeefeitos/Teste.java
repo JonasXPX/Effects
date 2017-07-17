@@ -27,11 +27,14 @@ public class Teste extends JavaPlugin implements Listener{
 	
 	BukkitTask task;
 	Random r = new Random();
+	public static Teste instance;
+	private Object ob;
 	HashMap<Player, Boolean> pl = new HashMap<Player, Boolean>();
    @Override
 	public void onEnable() {
 	   getServer().getPluginManager().registerEvents(this, this);
 	   new Efeitos(this);
+	   instance = this;
 	
    }
    
@@ -46,6 +49,15 @@ public class Teste extends JavaPlugin implements Listener{
 		   }
 		 p.openInventory(criaoBau(p));
 	   }
+	  /*if(args.length == 1 && args[0].equalsIgnoreCase("on")){
+		   ob = new CreateEffect(p);
+		   ((CreateEffect)ob).start(ParticleEffect.REDSTONE);
+	   } else if (args.length == 1 && args[0].equalsIgnoreCase("off")){
+		   if(ob != null)
+			   ((CreateEffect)ob).stop();
+		   else 
+			   p.sendMessage("§cNão iniciado");
+	   }*/
 	   return true;
    }
    

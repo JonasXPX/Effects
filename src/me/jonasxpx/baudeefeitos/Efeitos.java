@@ -3,15 +3,13 @@ package me.jonasxpx.baudeefeitos;
 import java.util.HashMap;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import com.darkblade12.particleeffect.ParticleEffect;
-import com.darkblade12.particleeffect.ParticleEffect.ParticleData;
 
 public class Efeitos {
 
@@ -21,6 +19,7 @@ public class Efeitos {
 	private static Teste pl;
 	private static int raio = 0;
 	private static Random random = new Random();
+	
 	public Efeitos(Teste plugin){
 		pl = plugin;
 	}
@@ -255,9 +254,7 @@ public class Efeitos {
 				double radian = Math.toRadians(raio);
 				double cos = Math.cos(radian);
 				double sin = Math.sin(radian);
-				
 				ParticleEffect.DRIP_LAVA.display(0,0,0, 0.4F, 20, p.getLocation().add((float)cos, (float)cos + 1, (float)sin), 25);
-
 				ParticleEffect.DRIP_LAVA.display(0,0,0, 0.4F, 20, p.getLocation().add((float)cos * -1, (float)cos + 1, (float)sin * -1), 25);
 			}
 		}.runTaskTimer(pl, 0, 0L);
@@ -300,11 +297,25 @@ public class Efeitos {
 		cancelar(p);
 		BukkitTask task = null;
 		task = new BukkitRunnable() {
+			private int radio;
+
 			@Override
 			public void run() {
-				ParticleEffect.REDSTONE.display(0.5F, 1.5F, 0.5F, 2F, 40, p.getLocation(), 20D);
+				if(radio >= 360) radio = 0;
+				double radians = Math.toRadians(radio);
+				final double cos = Math.cos(radians) * 0.3;
+				final double sin = Math.sin(radians) * 0.3;
+				final Location loc = p.getLocation();
+				radio = radio + 25;
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						ParticleEffect.REDSTONE.display(0.01F, 0, 0.01F, 1F, 25, loc.add(sin, 2, cos), 25);
+						ParticleEffect.REDSTONE.display(0.01F, 0, 0.01F, 1F, 25, loc.add(sin, -2, cos), 25);
+					}
+				}.runTask(Teste.instance);
 			}
-		}.runTaskTimer(pl, 0, TIME);
+		}.runTaskTimerAsynchronously(Teste.instance, 0L, 0L);
 		ativos.put(p, task);
 	}
 	public static void cancelar(Player p){
